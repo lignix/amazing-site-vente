@@ -1,13 +1,14 @@
 import React from "react";
-import ObjectList from "./components/ObjectList";
-import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import SignupPage from "./pages/SignUpPage";
 
 const App: React.FC = () => {
   return (
-    <div>
-      <h1>feur</h1>
-      <ObjectList />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/signup" element={<SignupPage />} />
+      </Routes>
+    </Router>
   );
 };
 
