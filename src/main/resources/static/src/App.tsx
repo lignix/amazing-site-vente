@@ -5,7 +5,7 @@ import SignupPage from "./pages/SignUpPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LogInPage";
-import PrivateRoute from "./components/PrivateRoute"; // Import du composant PrivateRoute
+import PrivateRoute from "./components/PrivateRoute";
 
 const App: React.FC = () => {
   return (

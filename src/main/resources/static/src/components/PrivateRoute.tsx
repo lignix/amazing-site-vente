@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useUser } from "../context/UserContext"; // Import du hook useUser
+import { useUser } from "../context/UserContext";
 
 const PrivateRoute: React.FC = () => {
   const { login } = useUser();

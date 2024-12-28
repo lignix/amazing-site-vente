@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .formLogin() // Utiliser un formulaire de connexion classique
                 .permitAll()
                 .and()
-                .httpBasic(); // Optionnel, si tu veux aussi autoriser l'authentification basique
+                .httpBasic();
         return http.build();
     }
 }

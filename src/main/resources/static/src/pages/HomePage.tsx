@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext"; // Import du hook useUser
+import { useUser } from "../context/UserContext";
 
 const HomePage: React.FC = () => {
-  const { login, setLogin } = useUser(); // Récupère le login de l'utilisateur depuis le contexte
+  const { login, setLogin } = useUser();
   const navigate = useNavigate();
 
   const handleLogout = () => {

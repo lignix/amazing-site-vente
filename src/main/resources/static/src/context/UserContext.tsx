@@ -7,7 +7,6 @@ import React, {
   useEffect,
 } from "react";
 
-// Définir l'interface pour l'utilisateur
 interface UserContextType {
   login: string | null;
   setLogin: (login: string | null) => void;
@@ -38,7 +37,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   );
 };
 
-// Hook personnalisé pour accéder au contexte
+// Hook pour accéder au contexte
 export const useUser = (): UserContextType => {
   const context = useContext(UserContext);
   if (!context) {

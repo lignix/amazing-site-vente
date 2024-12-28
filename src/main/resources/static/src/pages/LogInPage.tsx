@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext"; // Import du hook useUser
+import { useUser } from "../context/UserContext";
 import FormInput from "../components/FormInput";
 
 const LoginPage: React.FC = () => {
@@ -8,7 +8,7 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { setLogin: setUserLogin } = useUser(); // Utilisation du setLogin du contexte
+  const { setLogin: setUserLogin } = useUser();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +32,7 @@ const LoginPage: React.FC = () => {
       } else {
         // Mettre à jour le contexte utilisateur avec le login
         setUserLogin(login);
-        localStorage.setItem("login", login); // Enregistrer dans localStorage
+        localStorage.setItem("login", login);
         navigate("/home");
       }
     } catch (error) {
