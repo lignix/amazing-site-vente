@@ -21,7 +21,11 @@ public class SecurityConfig {
                 .cors().and().csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize
                         .anyRequest().permitAll() // Autoriser toutes les requêtes
-                );
+                )
+                .formLogin() // Utiliser un formulaire de connexion classique
+                .permitAll()
+                .and()
+                .httpBasic(); // Optionnel, si tu veux aussi autoriser l'authentification basique
         return http.build();
     }
 }

@@ -6,5 +6,7 @@ import com.goat.site_vente.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    boolean existsByLogin(String login); // Vérifie si le login est unique
+    boolean existsByLogin(String login);
+
+    User findByLogin(String login);
 }
