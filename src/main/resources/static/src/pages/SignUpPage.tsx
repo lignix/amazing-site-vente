@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
-import FormInput from "../components/FormInput";
+import { useNavigate } from "react-router-dom"; // Importer useNavigate
+import FormInput from "../components/FormInput"; // Assure-toi que ce composant existe et est stylisé si nécessaire
 
 const SignupPage: React.FC = () => {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [city, setCity] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate(); // Récupérer la fonction navigate
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,9 +28,8 @@ const SignupPage: React.FC = () => {
       );
 
       // succès
-      console.log("Utilisateur enregistré : ", response.data);
-      // TODO : redirect page de connexion / connecter automatiquement
-      // erreur
+      console.log(response.data);
+      navigate("/login");
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data || "Erreur inconnue");
@@ -39,37 +40,55 @@ const SignupPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Inscription</h1>
-      <form onSubmit={handleSubmit}>
-        <FormInput
-          label="Login"
-          type="text"
-          id="login"
-          value={login}
-          onChange={(e) => setLogin(e.target.value.trim())}
-          required
-        />
-        <FormInput
-          label="Mot de passe"
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value.trim())}
-          required
-        />
-        <FormInput
-          label="Ville"
-          type="text"
-          id="city"
-          value={city}
-          onChange={(e) => setCity(e.target.value.trim())}
-          required
-        />
-        <button type="submit">S'inscrire</button>
-      </form>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+      <div className="w-full max-w-md bg-white shadow-md rounded-lg p-8">
+        <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
+          Inscription
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <FormInput
+            label="Login"
+            type="text"
+            id="login"
+            value={login}
+            onChange={(e) => setLogin(e.target.value.trim())}
+            required
+          />
+          <FormInput
+            label="Mot de passe"
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value.trim())}
+            required
+          />
+          <FormInput
+            label="Ville"
+            type="text"
+            id="city"
+            value={city}
+            onChange={(e) => setCity(e.target.value.trim())}
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+          >
+            S'inscrire
+          </button>
+        </form>
+        {error && (
+          <p className="mt-4 text-center text-sm text-red-600">{error}</p>
+        )}
+        <div className="mt-4 text-center">
+          <span className="text-sm text-gray-600">
+            Déjà un compte ?{" "}
+            <a href="/login" className="text-blue-600 hover:text-blue-800">
+              Se connecter
+            </a>
+          </span>
+        </div>
+      </div>
     </div>
   );
 };

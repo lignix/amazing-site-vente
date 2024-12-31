@@ -1,6 +1,8 @@
+// src/pages/LoginPage.tsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
+import Input from "../components/FormInput";
 
 const LoginPage: React.FC = () => {
   const [login, setLogin] = useState("");
@@ -45,38 +47,22 @@ const LoginPage: React.FC = () => {
           Connexion
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="login"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Login
-            </label>
-            <input
-              type="text"
-              id="login"
-              value={login}
-              onChange={(e) => setLogin(e.target.value.trim())}
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Mot de passe
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value.trim())}
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
-          </div>
+          <Input
+            id="login"
+            label="Login"
+            type="text"
+            value={login}
+            onChange={(e) => setLogin(e.target.value.trim())}
+            required
+          />
+          <Input
+            id="password"
+            label="Mot de passe"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value.trim())}
+            required
+          />
           <button
             type="submit"
             className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition"
@@ -87,6 +73,14 @@ const LoginPage: React.FC = () => {
         {error && (
           <p className="mt-4 text-center text-sm text-red-600">{error}</p>
         )}
+        <div className="mt-4 text-center">
+          <span className="text-sm text-gray-600">
+            Pas encore inscrit ?{" "}
+            <Link to="/signup" className="text-blue-600 hover:text-blue-800">
+              Créer un compte
+            </Link>
+          </span>
+        </div>
       </div>
     </div>
   );
