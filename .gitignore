@@ -14,7 +14,6 @@ dist/
 
 # Environment variables and secrets
 *.env
-application.properties
 
 ### STS ###
 .apt_generated

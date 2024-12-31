@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
-import FormInput from "../components/FormInput";
 
 const LoginPage: React.FC = () => {
   const [login, setLogin] = useState("");
@@ -30,7 +29,6 @@ const LoginPage: React.FC = () => {
         const errorData = await response.text();
         setError(errorData);
       } else {
-        // Mettre à jour le contexte utilisateur avec le login
         setUserLogin(login);
         localStorage.setItem("login", login);
         navigate("/home");
@@ -41,29 +39,55 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>Connexion</h1>
-      <form onSubmit={handleSubmit}>
-        <FormInput
-          label="Login"
-          type="text"
-          id="login"
-          value={login}
-          onChange={(e) => setLogin(e.target.value.trim())}
-          required
-        />
-        <FormInput
-          label="Mot de passe"
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value.trim())}
-          required
-        />
-        <button type="submit">Se connecter</button>
-      </form>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div className="flex min-h-screen items-center justify-center bg-gray-100">
+      <div className="w-full max-w-md bg-white shadow-md rounded-lg p-8">
+        <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
+          Connexion
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label
+              htmlFor="login"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Login
+            </label>
+            <input
+              type="text"
+              id="login"
+              value={login}
+              onChange={(e) => setLogin(e.target.value.trim())}
+              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Mot de passe
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value.trim())}
+              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+          >
+            Se connecter
+          </button>
+        </form>
+        {error && (
+          <p className="mt-4 text-center text-sm text-red-600">{error}</p>
+        )}
+      </div>
     </div>
   );
 };
