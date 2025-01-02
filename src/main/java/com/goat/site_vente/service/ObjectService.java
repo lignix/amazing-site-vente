@@ -1,7 +1,11 @@
 package com.goat.site_vente.service;
 
+import com.goat.site_vente.DTO.ObjectForSaleDTO;
 import com.goat.site_vente.entity.ObjectForSale;
+import com.goat.site_vente.entity.User;
 import com.goat.site_vente.repository.ObjectRepository;
+import com.goat.site_vente.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,32 +17,32 @@ public class ObjectService {
 
     @Autowired
     private ObjectRepository objectRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    // 1. Récupérer tous les objets
+    // Récupérer tous les objets
     public List<ObjectForSale> getAllObjects() {
         return objectRepository.findAll();
     }
 
-    // 2. Récupérer un objet par son ID
+    // Récupérer un objet par son ID
     public Optional<ObjectForSale> getObjectById(Long id) {
         return objectRepository.findById(id);
     }
 
-    // 3. Créer un nouvel objet
-    public ObjectForSale createObject(ObjectForSale objectForSale) {
+    // Créer un nouvel objet
+    public ObjectForSale createObjectForSale(ObjectForSaleDTO request, String login) {
+        User user = userRepository.findByLogin(login);
+        ObjectForSale objectForSale = new ObjectForSale();
+        objectForSale.setDescription(request.getDescription());
+        objectForSale.setPrice(request.getPrice());
+        objectForSale.setUser(user);
+        objectForSale.setSold(false);
+
         return objectRepository.save(objectForSale);
     }
 
-    // 4. Mettre à jour un objet
-    public ObjectForSale updateObject(Long id, ObjectForSale objectForSale) {
-        if (objectRepository.existsById(id)) {
-            objectForSale.setId(id); // Assurer que l'ID est bien celui de l'objet à mettre à jour
-            return objectRepository.save(objectForSale);
-        }
-        return null; // Ou lancer une exception pour indiquer que l'objet n'existe pas
-    }
-
-    // 5. Supprimer un objet
+    // Supprimer un objet
     public void deleteObject(Long id) {
         objectRepository.deleteById(id);
     }
