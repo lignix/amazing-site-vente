@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Importer useNavigate
 import FormInput from "../components/FormInput"; // Assure-toi que ce composant existe et est stylisé si nécessaire
+import PageTitle from "../components/PageTitle";
+import SignInFooter from "../components/SignInFooter";
 
 const SignupPage: React.FC = () => {
   const [login, setLogin] = useState("");
@@ -40,11 +42,9 @@ const SignupPage: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white shadow-md rounded-lg p-8">
-        <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
-          Inscription
-        </h1>
+    <div className="flex min-h-screen items-center justify-center bg-gray-800">
+      <div className="w-full max-w-md bg-gray-700 shadow-md rounded-lg p-8">
+        <PageTitle className="text-center">Inscription</PageTitle>
         <form onSubmit={handleSubmit} className="space-y-4">
           <FormInput
             label="Login"
@@ -80,14 +80,11 @@ const SignupPage: React.FC = () => {
         {error && (
           <p className="mt-4 text-center text-sm text-red-600">{error}</p>
         )}
-        <div className="mt-4 text-center">
-          <span className="text-sm text-gray-600">
-            Déjà un compte ?{" "}
-            <a href="/login" className="text-blue-600 hover:text-blue-800">
-              Se connecter
-            </a>
-          </span>
-        </div>
+        <SignInFooter
+          link="/login"
+          text="Déjà un compte ?"
+          linkText="Se connecter"
+        />
       </div>
     </div>
   );

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import axios from "axios";
+import Input from "../components/FormInput";
+import PageTitle from "../components/PageTitle";
 
 const HomePage: React.FC = () => {
   const { login, setLogin } = useUser();
@@ -63,12 +65,10 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-7xl bg-white shadow-lg rounded-lg p-8">
-        <h1 className="text-4xl font-bold text-blue-600 mb-4">
-          Bienvenue à l'accueil
-        </h1>
-        <p className="text-xl text-gray-700 mb-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-800">
+      <div className="w-full bg-gray-700 shadow-lg rounded-lg p-12">
+        <PageTitle>Bienvenue à l'accueil</PageTitle>
+        <p className="text-xl text-blue-300 mb-4">
           Bienvenue,{" "}
           <span className="font-semibold text-blue-600">{login}</span>!
         </p>
@@ -76,59 +76,42 @@ const HomePage: React.FC = () => {
         {/* Conteneur flex pour organiser la page en deux colonnes */}
         <div className="flex space-x-8">
           {/* Partie gauche : Affichage des objets mis en vente (placeholder pour l'instant) */}
-          <div className="flex-grow bg-gray-200 p-4 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+          <div className="flex-grow bg-gray-600 p-4 rounded-lg shadow-md">
+            <h2 className="text-2xl font-semibold text-blue-300 mb-4">
               Objets à vendre
             </h2>
-            <p className="text-gray-600">
+            <p className="text-blue-400">
               Cette section affichera les objets mis en vente plus tard.
             </p>
           </div>
 
           {/* Partie droite : Formulaire d'ajout d'objet */}
           <div className="w-1/3">
-            <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+            <h2 className="text-2xl font-semibold text-blue-300 mb-4">
               Ajouter un objet à vendre
             </h2>
 
             <form onSubmit={handleCreateObject} className="space-y-4">
               {/* Description */}
-              <div>
-                <label
-                  htmlFor="description"
-                  className="block text-lg font-medium text-gray-600 mb-2"
-                >
-                  Description de l'objet
-                </label>
-                <input
-                  id="description"
-                  type="text"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Entrez une description de l'objet"
-                  required
-                />
-              </div>
-
+              <Input
+                id="description"
+                label="Description de l'objet"
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                placeholder="Entrez une description de l'objet"
+              />
               {/* Prix */}
-              <div>
-                <label
-                  htmlFor="price"
-                  className="block text-lg font-medium text-gray-600 mb-2"
-                >
-                  Prix de l'objet
-                </label>
-                <input
-                  id="price"
-                  type="number"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Entrez le prix de l'objet"
-                  required
-                />
-              </div>
+              <Input
+                id="price"
+                label="Prix de l'objet"
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                required
+                placeholder="Entrez le prix de l'objet"
+              />
 
               {/* Bouton pour soumettre */}
               <button
