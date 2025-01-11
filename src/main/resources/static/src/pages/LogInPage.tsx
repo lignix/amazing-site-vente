@@ -43,7 +43,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-800">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-800">
       <div className="w-full max-w-md bg-gray-700 shadow-md rounded-lg p-8">
         <PageTitle className="text-center">Connexion</PageTitle>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -78,6 +78,14 @@ const LoginPage: React.FC = () => {
           text="Pas encore inscrit ?"
           linkText="Créer un compte"
         />
+      </div>
+      <div className="w-full text-center mt-6">
+        <p className="text-white">
+          Envie de visiter ?{" "}
+          <a href="/home" className="text-blue-400 hover:underline">
+            Aller à l'accueil
+          </a>
+        </p>
       </div>
     </div>
   );

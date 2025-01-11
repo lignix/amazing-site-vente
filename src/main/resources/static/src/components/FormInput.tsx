@@ -2,13 +2,14 @@
 import React from "react";
 
 interface InputProps {
-  id: string;
-  label: string;
+  id?: string;
+  label?: string;
   type: string;
   value: string | number;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
   placeholder?: string;
+  disabled?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -19,6 +20,7 @@ const Input: React.FC<InputProps> = ({
   onChange,
   required = false,
   placeholder = "",
+  disabled,
 }) => {
   return (
     <div>
@@ -29,6 +31,7 @@ const Input: React.FC<InputProps> = ({
         {label}
       </label>
       <input
+        disabled={disabled}
         type={type}
         id={id}
         value={value}

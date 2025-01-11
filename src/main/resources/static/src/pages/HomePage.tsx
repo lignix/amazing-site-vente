@@ -1,26 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
 import axios from "axios";
 import Input from "../components/FormInput";
 import PageTitle from "../components/PageTitle";
+import PartTitle from "../components/PartTitle";
+import FormInput from "../components/FormInput";
+
+interface ObjectForSale {
+  id: number;
+  description: string;
+  price: number;
+}
 
 const HomePage: React.FC = () => {
   const { login, setLogin } = useUser();
   const navigate = useNavigate();
-
-  // États pour le formulaire d'ajout d'objet
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number | string>("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [objects, setObjects] = useState<ObjectForSale[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleLogout = () => {
-    // Effacer le login du contexte
     setLogin(null);
-    // Supprimer le login du localStorage
     localStorage.removeItem("login");
-    // Rediriger l'utilisateur vers la page de login
     navigate("/login");
   };
 
@@ -29,7 +34,6 @@ const HomePage: React.FC = () => {
     setError(null);
     setSuccess(null);
 
-    // Vérification des champs
     if (!description || !price) {
       setError("Veuillez remplir tous les champs.");
       return;
@@ -43,7 +47,6 @@ const HomePage: React.FC = () => {
     }
 
     try {
-      // Envoi de la requête pour créer un objet à vendre
       await axios.post(
         "http://localhost:8080/api/objects/create",
         { description, price },
@@ -54,7 +57,6 @@ const HomePage: React.FC = () => {
         }
       );
       setSuccess("Objet ajouté avec succès !");
-      // Réinitialiser les champs du formulaire
       setDescription("");
       setPrice("");
     } catch (err) {
@@ -64,68 +66,122 @@ const HomePage: React.FC = () => {
     }
   };
 
+  const fetchObjects = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/api/objects");
+      setObjects(response.data);
+    } catch (err) {
+      console.error("Erreur lors de la récupération des objets", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchObjects();
+  }, []);
+
+  const filteredObjects = objects.filter((obj) =>
+    obj.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-800">
-      <div className="w-full bg-gray-700 shadow-lg rounded-lg p-12">
+      <div className="w-full h-[90vh] bg-gray-700 shadow-lg rounded-lg p-12">
         <PageTitle>Bienvenue à l'accueil</PageTitle>
-        <p className="text-xl text-blue-300 mb-4">
-          Bienvenue,{" "}
-          <span className="font-semibold text-blue-600">{login}</span>!
-        </p>
 
-        {/* Conteneur flex pour organiser la page en deux colonnes */}
+        {/* Affichage conditionnel du texte de bienvenue */}
+        {login && (
+          <p className="text-xl text-blue-300 mb-4">
+            Bienvenue,{" "}
+            <span className="font-semibold text-blue-600">{login}</span>!
+          </p>
+        )}
+
         <div className="flex space-x-8">
-          {/* Partie gauche : Affichage des objets mis en vente (placeholder pour l'instant) */}
+          {/* Partie gauche : Affichage des objets mis en vente */}
           <div className="flex-grow bg-gray-600 p-4 rounded-lg shadow-md">
-            <h2 className="text-2xl font-semibold text-blue-300 mb-4">
-              Objets à vendre
-            </h2>
-            <p className="text-blue-400">
-              Cette section affichera les objets mis en vente plus tard.
-            </p>
+            <PartTitle title="Objets en vente" />
+            <FormInput
+              placeholder="Rechercher un objet..."
+              type={"text"}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+
+            <div className="overflow-y-auto max-h-[calc(90vh-16rem)]">
+              <ul className="pt-4">
+                {filteredObjects.map((obj) => (
+                  <li
+                    key={obj.id}
+                    className="mb-2 p-2 bg-blue-200 rounded shadow"
+                  >
+                    <p>
+                      <strong>Description:</strong> {obj.description}
+                    </p>
+                    <p>
+                      <strong>Prix:</strong> {obj.price} €
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          {/* Partie droite : Formulaire d'ajout d'objet */}
-          <div className="w-1/3">
-            <h2 className="text-2xl font-semibold text-blue-300 mb-4">
-              Ajouter un objet à vendre
-            </h2>
-
-            <form onSubmit={handleCreateObject} className="space-y-4">
-              {/* Description */}
-              <Input
-                id="description"
-                label="Description de l'objet"
-                type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-                placeholder="Entrez une description de l'objet"
-              />
-              {/* Prix */}
-              <Input
-                id="price"
-                label="Prix de l'objet"
-                type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                required
-                placeholder="Entrez le prix de l'objet"
-              />
-
-              {/* Bouton pour soumettre */}
+          {/* Partie droite : Affichage conditionnel du formulaire */}
+          {!login ? (
+            <div className="w-1/3">
+              {/* Message pour demander à l'utilisateur de se connecter */}
+              <h2 className="text-red-500 font-bold text-xl mb-2">
+                Vous devez être connecté pour ajouter un objet à vendre.
+              </h2>
               <button
-                type="submit"
-                className="w-full bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-700 transition"
+                onClick={() => navigate("/login")}
+                className="w-full bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition mt-8"
               >
-                Ajouter l'objet
+                Se connecter
               </button>
-            </form>
+            </div>
+          ) : (
+            <div className="w-1/3">
+              <PartTitle title="Ajouter un objet à vendre" />
 
-            {/* Affichage des messages d'erreur ou de succès */}
-            {error && <p className="mt-4 text-red-600">{error}</p>}
-            {success && <p className="mt-4 text-green-600">{success}</p>}
-          </div>
+              <form onSubmit={handleCreateObject} className="space-y-4">
+                <Input
+                  id="description"
+                  label="Description de l'objet"
+                  type="text"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                  placeholder="Entrez une description de l'objet"
+                />
+                <Input
+                  id="price"
+                  label="Prix de l'objet"
+                  type="number"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  required
+                  placeholder="Entrez le prix de l'objet"
+                />
+
+                <button
+                  type="submit"
+                  className="w-full bg-green-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-green-700 transition"
+                >
+                  Ajouter l'objet
+                </button>
+              </form>
+
+              {error && <p className="mt-4 text-red-600">{error}</p>}
+              {success && <p className="mt-4 text-green-600">{success}</p>}
+              <button
+                onClick={() => navigate("/mes-objets")}
+                className="w-full bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition mt-4"
+              >
+                Voir mes objets
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Bouton pour se déconnecter */}

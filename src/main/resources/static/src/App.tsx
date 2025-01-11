@@ -5,7 +5,6 @@ import SignupPage from "./pages/SignUpPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LogInPage";
-import PrivateRoute from "./components/PrivateRoute";
 
 const App: React.FC = () => {
   return (
@@ -15,10 +14,7 @@ const App: React.FC = () => {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
 
-          {/* Protéger les routes qui nécessitent une connexion */}
-          <Route element={<PrivateRoute />}>
-            <Route path="/home" element={<HomePage />} />
-          </Route>
+          <Route path="/home" element={<HomePage />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
