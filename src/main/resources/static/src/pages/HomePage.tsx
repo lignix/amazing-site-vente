@@ -59,6 +59,7 @@ const HomePage: React.FC = () => {
       setSuccess("Objet ajouté avec succès !");
       setDescription("");
       setPrice("");
+      fetchObjects(); // Recharger les objets après l'ajout
     } catch (err) {
       setError(
         "Une erreur est survenue lors de la création de l'objet: " + err
