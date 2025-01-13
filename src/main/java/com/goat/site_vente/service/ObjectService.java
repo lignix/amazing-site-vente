@@ -30,6 +30,11 @@ public class ObjectService {
         return objectRepository.findById(id);
     }
 
+    // Récupérer les objets d'un utilisateur
+    public List<ObjectForSale> getObjectsByLogin(String login) {
+        return objectRepository.findByUserLogin(login);
+    }
+
     // Créer un nouvel objet
     public ObjectForSale createObjectForSale(ObjectForSaleDTO request, String login) {
         User user = userRepository.findByLogin(login);

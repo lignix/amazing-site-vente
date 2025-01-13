@@ -10,6 +10,8 @@ import SignupPage from "./pages/SignUpPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LogInPage";
+import MyObjectsPage from "./pages/MyObjectsPage"; // Assurez-vous que cette importation est correcte
+import PrivateRoute from "./components/PrivateRoute"; // Assurez-vous que cette importation est correcte
 
 const App: React.FC = () => {
   return (
@@ -20,6 +22,14 @@ const App: React.FC = () => {
           <Route path="/home" element={<HomePage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/mes-objets"
+            element={
+              <PrivateRoute>
+                <MyObjectsPage />
+              </PrivateRoute>
+            }
+          />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>

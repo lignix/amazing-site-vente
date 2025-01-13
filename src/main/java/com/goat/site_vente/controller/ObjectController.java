@@ -29,6 +29,13 @@ public class ObjectController {
         return objectService.getObjectById(id);
     }
 
+    // Récupérer les objets d'un utilisateur
+    @GetMapping("/my")
+    public ResponseEntity<List<ObjectForSale>> getObjectsByLogin(@RequestHeader("login") String login) {
+        List<ObjectForSale> objects = objectService.getObjectsByLogin(login);
+        return ResponseEntity.ok(objects);
+    }
+
     // Créer un nouvel objet
     @PostMapping("/create")
     public ResponseEntity<ObjectForSale> createObjectForSale(
