@@ -47,6 +47,16 @@ public class ObjectService {
         return objectRepository.save(objectForSale);
     }
 
+    public ObjectForSale markObjectAsSold(Long id) {
+        Optional<ObjectForSale> optionalObject = objectRepository.findById(id);
+        if (optionalObject.isPresent()) {
+            ObjectForSale object = optionalObject.get();
+            object.setSold(true); // Marquer l'objet comme vendu
+            return objectRepository.save(object); // Sauvegarder l'objet mis à jour
+        }
+        return null; // Retourner null si l'objet n'est pas trouvé
+    }
+
     // Supprimer un objet
     public void deleteObject(Long id) {
         objectRepository.deleteById(id);
