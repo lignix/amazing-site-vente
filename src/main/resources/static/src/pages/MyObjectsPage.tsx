@@ -9,7 +9,7 @@ interface ObjectForSale {
   id: number;
   description: string;
   price: number;
-  isSold: boolean;
+  sold: boolean;
 }
 
 const MyObjectsPage: React.FC = () => {
@@ -47,12 +47,12 @@ const MyObjectsPage: React.FC = () => {
   const setObjectSold = async (id: number) => {
     try {
       await axios.patch(`http://localhost:8080/api/objects/${id}`, {
-        isSold: true,
+        sold: true,
       });
       // Mettre à jour l'état local pour marquer l'objet comme vendu
       setObjects((prevObjects) =>
         prevObjects.map((obj) =>
-          obj.id === id ? { ...obj, isSold: true } : obj
+          obj.id === id ? { ...obj, sold: true } : obj
         )
       );
     } catch (err) {
@@ -88,9 +88,9 @@ const MyObjectsPage: React.FC = () => {
                       <div className="flex items-center space-x-4">
                         <p>
                           Status :{" "}
-                          <strong>{obj.isSold ? "Vendu" : "En vente"}</strong>
+                          <strong>{obj.sold ? "Vendu" : "En vente"}</strong>
                         </p>
-                        {!obj.isSold && (
+                        {!obj.sold && (
                           <button
                             onClick={() => setObjectSold(obj.id)}
                             className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
