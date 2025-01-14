@@ -11,7 +11,7 @@ interface ObjectForSale {
   id: number;
   description: string;
   price: number;
-  isSold: boolean;
+  sold: boolean;
 }
 
 const HomePage: React.FC = () => {
@@ -109,7 +109,7 @@ const HomePage: React.FC = () => {
   }, []);
 
   const filteredObjects = objects.filter((obj) =>
-    obj.description.toLowerCase().includes(searchTerm.toLowerCase())
+    obj.description.toLowerCase().includes(searchTerm.toLowerCase()) && !obj.sold
   );
 
   return (
