@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface ObjectForSale {
   id: number;
@@ -9,6 +10,7 @@ interface ObjectForSale {
 }
 
 const AdminPage: React.FC = () => {
+  const navigate = useNavigate();
   const [revenue, setRevenue] = useState<number>(0);
   const [totalSold, setTotalSold] = useState<number>(0);
 
@@ -49,6 +51,12 @@ const AdminPage: React.FC = () => {
             </p>
           </div>
         </div>
+        <button
+          onClick={() => navigate("/")}
+          className="w-full bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition mt-8"
+        >
+          Retour à l'accueil
+        </button>
       </div>
     </div>
   );
