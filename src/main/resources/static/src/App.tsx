@@ -10,8 +10,10 @@ import SignupPage from "./pages/SignUpPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LogInPage";
-import MyObjectsPage from "./pages/MyObjectsPage"; // Assurez-vous que cette importation est correcte
-import PrivateRoute from "./components/PrivateRoute"; // Assurez-vous que cette importation est correcte
+import MyObjectsPage from "./pages/MyObjectsPage";
+import PrivateRoute from "./components/PrivateRoute";
+import AdminRoute from "./components/AdminRoute";
+import AdminPage from "./pages/AdminPage";
 
 const App: React.FC = () => {
   return (
@@ -28,6 +30,14 @@ const App: React.FC = () => {
               <PrivateRoute>
                 <MyObjectsPage />
               </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
             }
           />
           <Route path="*" element={<NotFoundPage />} />

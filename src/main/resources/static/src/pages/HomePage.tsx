@@ -14,7 +14,7 @@ interface ObjectForSale {
 }
 
 const HomePage: React.FC = () => {
-  const { login, setLogin } = useUser();
+  const { user, setUser } = useUser();
   const navigate = useNavigate();
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number | string>("");
@@ -23,9 +23,37 @@ const HomePage: React.FC = () => {
   const [objects, setObjects] = useState<ObjectForSale[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
+  useEffect(() => {
+    const fetchAdminStatus = async () => {
+      if (!user?.login) return;
+
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/api/users/admin",
+          {
+            headers: { login: user.login },
+          }
+        );
+        setUser({
+          login: user.login,
+          isAdmin: response.data, // Mise à jour du statut admin
+        });
+      } catch (err) {
+        console.error(
+          "Erreur lors de la vérification de l'administrateur",
+          err
+        );
+      }
+    };
+
+    fetchAdminStatus();
+    fetchObjects();
+  }, [user, setUser]);
+
   const handleLogout = () => {
-    setLogin(null);
+    setUser(null); // Déconnexion
     localStorage.removeItem("login");
+    localStorage.removeItem("isAdmin");
     navigate("/login");
   };
 
@@ -39,9 +67,7 @@ const HomePage: React.FC = () => {
       return;
     }
 
-    const login = localStorage.getItem("login");
-
-    if (!login) {
+    if (!user?.login) {
       setError("Utilisateur non connecté.");
       return;
     }
@@ -52,7 +78,7 @@ const HomePage: React.FC = () => {
         { description, price },
         {
           headers: {
-            login: login, // Envoi du login dans les headers
+            login: user.login, // Envoi du login dans les headers
           },
         }
       );
@@ -89,16 +115,21 @@ const HomePage: React.FC = () => {
       <div className="w-full h-[90vh] bg-gray-700 shadow-lg rounded-lg p-12">
         <PageTitle>Bienvenue à l'accueil</PageTitle>
 
-        {/* Affichage conditionnel du texte de bienvenue */}
-        {login && (
+        {user?.login && (
           <p className="text-xl text-blue-300 mb-4">
             Bienvenue,{" "}
-            <span className="font-semibold text-blue-600">{login}</span>!
+            <span
+              className={`font-semibold ${
+                user.isAdmin ? "text-orange-600" : "text-blue-600"
+              }`}
+            >
+              {user.login}
+            </span>
+            !
           </p>
         )}
 
         <div className="flex space-x-8">
-          {/* Partie gauche : Affichage des objets mis en vente */}
           <div className="flex-grow bg-gray-600 p-4 rounded-lg shadow-md">
             <PartTitle title="Objets en vente" />
             <FormInput
@@ -127,10 +158,8 @@ const HomePage: React.FC = () => {
             </div>
           </div>
 
-          {/* Partie droite : Affichage conditionnel du formulaire */}
-          {!login ? (
+          {!user?.login ? (
             <div className="w-1/3">
-              {/* Message pour demander à l'utilisateur de se connecter */}
               <h2 className="text-red-500 font-bold text-xl mb-2">
                 Vous devez être connecté pour ajouter un objet à vendre.
               </h2>
@@ -181,12 +210,19 @@ const HomePage: React.FC = () => {
               >
                 Voir mes objets
               </button>
+              {user.isAdmin && (
+                <button
+                  onClick={() => navigate("/admin")}
+                  className="w-full bg-yellow-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-yellow-700 transition mt-4"
+                >
+                  Page Admin
+                </button>
+              )}
             </div>
           )}
         </div>
 
-        {/* Bouton pour se déconnecter */}
-        {login && (
+        {user?.login && (
           <button
             onClick={handleLogout}
             className="w-full bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 transition mt-8"

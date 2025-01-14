@@ -11,7 +11,7 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { setLogin: setUserLogin } = useUser();
+  const { setUser } = useUser(); // On accède à la fonction pour définir l'objet `user`
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,12 +29,22 @@ const LoginPage: React.FC = () => {
         }),
       });
 
+      // Vérifier si la réponse est réussie
       if (!response.ok) {
-        const errorData = await response.text();
+        const errorData = await response.text(); // Récupérer l'erreur sous forme de texte
         setError(errorData);
       } else {
-        setUserLogin(login);
-        localStorage.setItem("login", login);
+        // Consommer la réponse JSON
+        const userData = await response.json(); // Lire le corps de la réponse en tant qu'objet JSON
+        console.log(userData); // Afficher l'objet utilisateur dans la console
+
+        // Mettre à jour le contexte et stocker les données utilisateur dans le localStorage
+        setUser({
+          login: login,
+          isAdmin: userData.admin,
+        });
+
+        // Rediriger l'utilisateur vers la page d'accueil
         navigate("/home");
       }
     } catch (error) {

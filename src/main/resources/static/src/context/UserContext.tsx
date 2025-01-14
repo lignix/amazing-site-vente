@@ -7,9 +7,14 @@ import React, {
   useEffect,
 } from "react";
 
-interface UserContextType {
+interface User {
   login: string | null;
-  setLogin: (login: string | null) => void;
+  isAdmin: boolean; // Ajout du champ isAdmin
+}
+
+interface UserContextType {
+  user: User | null;
+  setUser: (user: User | null) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -17,21 +22,27 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  // Vérifier le login dans le localStorage au démarrage
+  // Vérifier l'utilisateur dans le localStorage au démarrage
   const storedLogin = localStorage.getItem("login");
-  const [login, setLogin] = useState<string | null>(storedLogin);
+  const storedIsAdmin = localStorage.getItem("isAdmin") === "true"; // Vérifier le statut admin
+  const [user, setUser] = useState<User | null>({
+    login: storedLogin,
+    isAdmin: storedIsAdmin,
+  });
 
-  // Mettre à jour localStorage lorsque le login change
+  // Mettre à jour localStorage lorsque l'utilisateur change
   useEffect(() => {
-    if (login) {
-      localStorage.setItem("login", login); // Sauvegarder le login dans localStorage
+    if (user?.login) {
+      localStorage.setItem("login", user.login);
+      localStorage.setItem("isAdmin", user.isAdmin.toString()); // Sauvegarder isAdmin
     } else {
-      localStorage.removeItem("login"); // Supprimer le login du localStorage si l'utilisateur se déconnecte
+      localStorage.removeItem("login");
+      localStorage.removeItem("isAdmin"); // Supprimer isAdmin du localStorage si déconnexion
     }
-  }, [login]);
+  }, [user]);
 
   return (
-    <UserContext.Provider value={{ login, setLogin }}>
+    <UserContext.Provider value={{ user, setUser }}>
       {children}
     </UserContext.Provider>
   );

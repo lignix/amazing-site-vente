@@ -35,4 +35,13 @@ public class UserService {
         user.setCity(city);
         return userRepository.save(user);
     }
+
+    public boolean isAdmin(String login) {
+        User user = userRepository.findByLogin(login);
+        if (user == null) {
+            throw new IllegalArgumentException("Utilisateur introuvable");
+        }
+        return user.isAdmin();
+    }
+
 }
