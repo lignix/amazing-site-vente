@@ -11,6 +11,7 @@ interface ObjectForSale {
   id: number;
   description: string;
   price: number;
+  isSold: boolean;
 }
 
 const HomePage: React.FC = () => {

@@ -61,8 +61,8 @@ const MyObjectsPage: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-800">
-      <div className="w-full h-[90vh] bg-gray-700 shadow-lg rounded-lg p-12">
+    <div className="flex min-h-screen h-full bg-gray-800 py-8">
+      <div className="flex flex-col justify-between w-full overflow-y-auto bg-gray-700 shadow-lg rounded-lg py-8 px-12 scroll-y">
         <PageTitle>Mes Objets</PageTitle>
 
         <div className="flex space-x-8">
