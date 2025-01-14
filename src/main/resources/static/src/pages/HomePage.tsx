@@ -194,7 +194,10 @@ const HomePage: React.FC = () => {
                   label="Prix de l'objet"
                   type="number"
                   value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value);
+                    setPrice(value >= 0 ? value : ""); // Empêche les valeurs négatives
+                  }}
                   required
                   placeholder="Entrez le prix de l'objet"
                 />
