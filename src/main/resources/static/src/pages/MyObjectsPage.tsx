@@ -9,6 +9,7 @@ interface ObjectForSale {
   id: number;
   description: string;
   price: number;
+  isSold: boolean;
 }
 
 const MyObjectsPage: React.FC = () => {
@@ -23,6 +24,7 @@ const MyObjectsPage: React.FC = () => {
     }
 
     const fetchMyObjects = async () => {
+      setObjects([]);
       try {
         const response = await axios.get(
           "http://localhost:8080/api/objects/my",
@@ -41,6 +43,23 @@ const MyObjectsPage: React.FC = () => {
     fetchMyObjects();
   }, [login, navigate]);
 
+  // Fonction pour marquer un objet comme vendu
+  const setObjectSold = async (id: number) => {
+    try {
+      await axios.patch(`http://localhost:8080/api/objects/${id}`, {
+        isSold: true,
+      });
+      // Mettre à jour l'état local pour marquer l'objet comme vendu
+      setObjects((prevObjects) =>
+        prevObjects.map((obj) =>
+          obj.id === id ? { ...obj, isSold: true } : obj
+        )
+      );
+    } catch (err) {
+      console.error("Erreur lors de la mise à jour de l'objet", err);
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-800">
       <div className="w-full h-[90vh] bg-gray-700 shadow-lg rounded-lg p-12">
@@ -56,14 +75,30 @@ const MyObjectsPage: React.FC = () => {
                   objects.map((obj) => (
                     <li
                       key={obj.id}
-                      className="mb-2 p-2 bg-blue-200 rounded shadow"
+                      className="mb-2 p-2 bg-blue-200 rounded shadow flex justify-between items-center"
                     >
-                      <p>
-                        <strong>Description:</strong> {obj.description}
-                      </p>
-                      <p>
-                        <strong>Prix:</strong> {obj.price} €
-                      </p>
+                      <div>
+                        <p>
+                          <strong>Description:</strong> {obj.description}
+                        </p>
+                        <p>
+                          <strong>Prix:</strong> {obj.price} €
+                        </p>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        <p>
+                          Status :{" "}
+                          <strong>{obj.isSold ? "Vendu" : "En vente"}</strong>
+                        </p>
+                        {!obj.isSold && (
+                          <button
+                            onClick={() => setObjectSold(obj.id)}
+                            className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
+                          >
+                            Marquer comme vendu
+                          </button>
+                        )}
+                      </div>
                     </li>
                   ))
                 ) : (
