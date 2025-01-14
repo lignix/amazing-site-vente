@@ -11,6 +11,7 @@ interface ObjectForSale {
   id: number;
   description: string;
   price: number;
+  sold: boolean;
 }
 
 const HomePage: React.FC = () => {
@@ -108,7 +109,7 @@ const HomePage: React.FC = () => {
   }, []);
 
   const filteredObjects = objects.filter((obj) =>
-    obj.description.toLowerCase().includes(searchTerm.toLowerCase())
+    obj.description.toLowerCase().includes(searchTerm.toLowerCase()) && !obj.sold
   );
 
   return (
@@ -142,24 +143,24 @@ const HomePage: React.FC = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
 
-              <div className="overflow-y-auto max-h-[50vh]">
-                <ul className="pt-4">
-                  {filteredObjects.map((obj) => (
-                    <li
-                      key={obj.id}
-                      className="mb-2 p-2 bg-blue-200 rounded shadow"
-                    >
-                      <p>
-                        <strong>Description:</strong> {obj.description}
-                      </p>
-                      <p>
-                        <strong>Prix:</strong> {obj.price} €
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div className="overflow-y-auto max-h-[calc(90vh-16rem)]">
+              <ul className="pt-4">
+                {filteredObjects.map((obj) => (
+                  <li
+                    key={obj.id}
+                    className="mb-2 p-2 bg-blue-200 rounded shadow"
+                  >
+                    <p>
+                      <strong>Description:</strong> {obj.description}
+                    </p>
+                    <p>
+                      <strong>Prix:</strong> {obj.price} €
+                    </p>
+                  </li>
+                ))}
+              </ul>
             </div>
+          </div>
 
             {/* Partie droite : Affichage conditionnel du formulaire */}
             {!login ? (
