@@ -6,10 +6,13 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
+import axios from "axios";
 
 interface UserContextType {
   login: string | null;
+  isAdmin: boolean;
   setLogin: (login: string | null) => void;
+  setIsAdmin: (isAdmin: boolean) => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -20,6 +23,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   // Vérifier le login dans le localStorage au démarrage
   const storedLogin = localStorage.getItem("login");
   const [login, setLogin] = useState<string | null>(storedLogin);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   // Mettre à jour localStorage lorsque le login change
   useEffect(() => {
@@ -30,8 +34,32 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, [login]);
 
+  // Vérifier si l'utilisateur est administrateur
+  useEffect(() => {
+    const fetchAdminStatus = async () => {
+      if (login) {
+        try {
+          const response = await axios.get(
+            "http://localhost:8080/api/users/admin",
+            {
+              headers: { login },
+            }
+          );
+          setIsAdmin(response.data); // Mise à jour du statut admin
+        } catch (err) {
+          console.error(
+            "Erreur lors de la vérification de l'administrateur",
+            err
+          );
+        }
+      }
+    };
+
+    fetchAdminStatus();
+  }, [login]);
+
   return (
-    <UserContext.Provider value={{ login, setLogin }}>
+    <UserContext.Provider value={{ login, isAdmin, setLogin, setIsAdmin }}>
       {children}
     </UserContext.Provider>
   );
@@ -44,4 +72,11 @@ export const useUser = (): UserContextType => {
     throw new Error("useUser must be used within a UserProvider");
   }
   return context;
+};
+
+// Hook pour accéder à l'état isAdmin
+export const useAdmin = (): boolean => {
+  const { isAdmin } = useUser();
+  console.log("isAdmin", isAdmin);
+  return isAdmin;
 };

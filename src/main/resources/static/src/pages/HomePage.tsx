@@ -22,6 +22,33 @@ const HomePage: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [objects, setObjects] = useState<ObjectForSale[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const fetchAdminStatus = async () => {
+      const login = localStorage.getItem("login");
+
+      if (!login) return;
+
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/api/users/admin",
+          {
+            headers: { login: login },
+          }
+        );
+        setIsAdmin(response.data); // Supposons que le backend renvoie un booléen
+      } catch (err) {
+        console.error(
+          "Erreur lors de la vérification de l'administrateur",
+          err
+        );
+      }
+    };
+
+    fetchAdminStatus();
+    fetchObjects();
+  }, []);
 
   const handleLogout = () => {
     setLogin(null);
@@ -93,7 +120,14 @@ const HomePage: React.FC = () => {
         {login && (
           <p className="text-xl text-blue-300 mb-4">
             Bienvenue,{" "}
-            <span className="font-semibold text-blue-600">{login}</span>!
+            <span
+              className={`font-semibold ${
+                isAdmin ? "text-orange-600" : "text-blue-600"
+              }`}
+            >
+              {login}
+            </span>
+            !
           </p>
         )}
 
@@ -181,6 +215,14 @@ const HomePage: React.FC = () => {
               >
                 Voir mes objets
               </button>
+              {isAdmin && (
+                <button
+                  onClick={() => navigate("/admin")}
+                  className="w-full bg-yellow-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-yellow-700 transition mt-4"
+                >
+                  Page Admin
+                </button>
+              )}
             </div>
           )}
         </div>
