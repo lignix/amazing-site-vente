@@ -11,6 +11,7 @@ interface ObjectForSale {
   id: number;
   description: string;
   price: number;
+  isSold: boolean;
 }
 
 const HomePage: React.FC = () => {
@@ -37,7 +38,7 @@ const HomePage: React.FC = () => {
             headers: { login: login },
           }
         );
-        setIsAdmin(response.data); // Supposons que le backend renvoie un booléen
+        setIsAdmin(response.data);
       } catch (err) {
         console.error(
           "Erreur lors de la vérification de l'administrateur",
@@ -79,14 +80,14 @@ const HomePage: React.FC = () => {
         { description, price },
         {
           headers: {
-            login: login, // Envoi du login dans les headers
+            login: login,
           },
         }
       );
       setSuccess("Objet ajouté avec succès !");
       setDescription("");
       setPrice("");
-      fetchObjects(); // Recharger les objets après l'ajout
+      fetchObjects();
     } catch (err) {
       setError(
         "Une erreur est survenue lors de la création de l'objet: " + err
@@ -107,8 +108,10 @@ const HomePage: React.FC = () => {
     fetchObjects();
   }, []);
 
-  const filteredObjects = objects.filter((obj) =>
-    obj.description.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredObjects = objects.filter(
+    (obj) =>
+      obj.description.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !obj.isSold
   );
 
   return (
@@ -142,24 +145,33 @@ const HomePage: React.FC = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
 
-              <div className="overflow-y-auto max-h-[50vh]">
-                <ul className="pt-4">
-                  {filteredObjects.map((obj) => (
-                    <li
-                      key={obj.id}
-                      className="mb-2 p-2 bg-blue-200 rounded shadow"
-                    >
-                      <p>
-                        <strong>Description:</strong> {obj.description}
-                      </p>
-                      <p>
-                        <strong>Prix:</strong> {obj.price} €
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div className="overflow-y-auto max-h-[calc(90vh-16rem)]">
+              <ul className="pt-4">
+                {filteredObjects.length > 0 ? (
+                  filteredObjects.map(
+                    (obj) => (
+                      console.log(obj),
+                      (
+                        <li
+                          key={obj.id}
+                          className="mb-2 p-2 bg-blue-200 rounded shadow"
+                        >
+                          <p>
+                            <strong>Description:</strong> {obj.description}
+                          </p>
+                          <p>
+                            <strong>Prix:</strong> {obj.price} € {obj.isSold}
+                          </p>
+                        </li>
+                      )
+                    )
+                  )
+                ) : (
+                  <p className="text-red-500">Aucun objet disponible.</p>
+                )}
+              </ul>
             </div>
+          </div>
 
             {/* Partie droite : Affichage conditionnel du formulaire */}
             {!login ? (
