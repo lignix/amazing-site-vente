@@ -11,7 +11,6 @@ interface ObjectForSale {
   id: number;
   description: string;
   price: number;
-  isSold: boolean;
 }
 
 const HomePage: React.FC = () => {
@@ -38,7 +37,7 @@ const HomePage: React.FC = () => {
             headers: { login: login },
           }
         );
-        setIsAdmin(response.data);
+        setIsAdmin(response.data); // Supposons que le backend renvoie un booléen
       } catch (err) {
         console.error(
           "Erreur lors de la vérification de l'administrateur",
@@ -80,14 +79,14 @@ const HomePage: React.FC = () => {
         { description, price },
         {
           headers: {
-            login: login,
+            login: login, // Envoi du login dans les headers
           },
         }
       );
       setSuccess("Objet ajouté avec succès !");
       setDescription("");
       setPrice("");
-      fetchObjects();
+      fetchObjects(); // Recharger les objets après l'ajout
     } catch (err) {
       setError(
         "Une erreur est survenue lors de la création de l'objet: " + err
@@ -108,10 +107,8 @@ const HomePage: React.FC = () => {
     fetchObjects();
   }, []);
 
-  const filteredObjects = objects.filter(
-    (obj) =>
-      obj.description.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      !obj.isSold
+  const filteredObjects = objects.filter((obj) =>
+    obj.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -147,28 +144,19 @@ const HomePage: React.FC = () => {
 
             <div className="overflow-y-auto max-h-[calc(90vh-16rem)]">
               <ul className="pt-4">
-                {filteredObjects.length > 0 ? (
-                  filteredObjects.map(
-                    (obj) => (
-                      console.log(obj),
-                      (
-                        <li
-                          key={obj.id}
-                          className="mb-2 p-2 bg-blue-200 rounded shadow"
-                        >
-                          <p>
-                            <strong>Description:</strong> {obj.description}
-                          </p>
-                          <p>
-                            <strong>Prix:</strong> {obj.price} € {obj.isSold}
-                          </p>
-                        </li>
-                      )
-                    )
-                  )
-                ) : (
-                  <p className="text-red-500">Aucun objet disponible.</p>
-                )}
+                {filteredObjects.map((obj) => (
+                  <li
+                    key={obj.id}
+                    className="mb-2 p-2 bg-blue-200 rounded shadow"
+                  >
+                    <p>
+                      <strong>Description:</strong> {obj.description}
+                    </p>
+                    <p>
+                      <strong>Prix:</strong> {obj.price} €
+                    </p>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
