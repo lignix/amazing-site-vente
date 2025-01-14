@@ -14,7 +14,7 @@ interface ObjectForSale {
 }
 
 const HomePage: React.FC = () => {
-  const { user, setUser } = useUser();
+  const { login, setLogin } = useUser();
   const navigate = useNavigate();
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<number | string>("");
@@ -22,22 +22,22 @@ const HomePage: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [objects, setObjects] = useState<ObjectForSale[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const fetchAdminStatus = async () => {
-      if (!user?.login) return;
+      const login = localStorage.getItem("login");
+
+      if (!login) return;
 
       try {
         const response = await axios.get(
           "http://localhost:8080/api/users/admin",
           {
-            headers: { login: user.login },
+            headers: { login: login },
           }
         );
-        setUser({
-          login: user.login,
-          isAdmin: response.data, // Mise à jour du statut admin
-        });
+        setIsAdmin(response.data); // Supposons que le backend renvoie un booléen
       } catch (err) {
         console.error(
           "Erreur lors de la vérification de l'administrateur",
@@ -48,12 +48,11 @@ const HomePage: React.FC = () => {
 
     fetchAdminStatus();
     fetchObjects();
-  }, [user, setUser]);
+  }, []);
 
   const handleLogout = () => {
-    setUser(null); // Déconnexion
+    setLogin(null);
     localStorage.removeItem("login");
-    localStorage.removeItem("isAdmin");
     navigate("/login");
   };
 
@@ -67,7 +66,9 @@ const HomePage: React.FC = () => {
       return;
     }
 
-    if (!user?.login) {
+    const login = localStorage.getItem("login");
+
+    if (!login) {
       setError("Utilisateur non connecté.");
       return;
     }
@@ -78,7 +79,7 @@ const HomePage: React.FC = () => {
         { description, price },
         {
           headers: {
-            login: user.login, // Envoi du login dans les headers
+            login: login, // Envoi du login dans les headers
           },
         }
       );
@@ -115,21 +116,23 @@ const HomePage: React.FC = () => {
       <div className="w-full h-[90vh] bg-gray-700 shadow-lg rounded-lg p-12">
         <PageTitle>Bienvenue à l'accueil</PageTitle>
 
-        {user?.login && (
+        {/* Affichage conditionnel du texte de bienvenue */}
+        {login && (
           <p className="text-xl text-blue-300 mb-4">
             Bienvenue,{" "}
             <span
               className={`font-semibold ${
-                user.isAdmin ? "text-orange-600" : "text-blue-600"
+                isAdmin ? "text-orange-600" : "text-blue-600"
               }`}
             >
-              {user.login}
+              {login}
             </span>
             !
           </p>
         )}
 
         <div className="flex space-x-8">
+          {/* Partie gauche : Affichage des objets mis en vente */}
           <div className="flex-grow bg-gray-600 p-4 rounded-lg shadow-md">
             <PartTitle title="Objets en vente" />
             <FormInput
@@ -158,8 +161,10 @@ const HomePage: React.FC = () => {
             </div>
           </div>
 
-          {!user?.login ? (
+          {/* Partie droite : Affichage conditionnel du formulaire */}
+          {!login ? (
             <div className="w-1/3">
+              {/* Message pour demander à l'utilisateur de se connecter */}
               <h2 className="text-red-500 font-bold text-xl mb-2">
                 Vous devez être connecté pour ajouter un objet à vendre.
               </h2>
@@ -210,7 +215,7 @@ const HomePage: React.FC = () => {
               >
                 Voir mes objets
               </button>
-              {user.isAdmin && (
+              {isAdmin && (
                 <button
                   onClick={() => navigate("/admin")}
                   className="w-full bg-yellow-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-yellow-700 transition mt-4"
@@ -222,7 +227,8 @@ const HomePage: React.FC = () => {
           )}
         </div>
 
-        {user?.login && (
+        {/* Bouton pour se déconnecter */}
+        {login && (
           <button
             onClick={handleLogout}
             className="w-full bg-red-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-red-700 transition mt-8"
