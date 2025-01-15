@@ -108,8 +108,10 @@ const HomePage: React.FC = () => {
     fetchObjects();
   }, []);
 
-  const filteredObjects = objects.filter((obj) =>
-    obj.description.toLowerCase().includes(searchTerm.toLowerCase()) && !obj.sold
+  const filteredObjects = objects.filter(
+    (obj) =>
+      obj.description.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      !obj.sold
   );
 
   return (
@@ -143,24 +145,30 @@ const HomePage: React.FC = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
 
-            <div className="overflow-y-auto max-h-[calc(90vh-16rem)]">
-              <ul className="pt-4">
-                {filteredObjects.map((obj) => (
-                  <li
-                    key={obj.id}
-                    className="mb-2 p-2 bg-blue-200 rounded shadow"
-                  >
-                    <p>
-                      <strong>Description:</strong> {obj.description}
-                    </p>
-                    <p>
-                      <strong>Prix:</strong> {obj.price} €
-                    </p>
-                  </li>
-                ))}
-              </ul>
+              <div className="overflow-y-auto max-h-[calc(90vh-16rem)]">
+                {filteredObjects.length > 0 ? (
+                  <ul className="pt-4">
+                    {filteredObjects.map((obj) => (
+                      <li
+                        key={obj.id}
+                        className="mb-2 p-2 bg-blue-200 rounded shadow"
+                      >
+                        <p>
+                          <strong>Description:</strong> {obj.description}
+                        </p>
+                        <p>
+                          <strong>Prix:</strong> {obj.price} €
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="pt-4 text-center text-red-600">
+                    Aucun objet ne correspond à votre recherche.
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
 
             {/* Partie droite : Affichage conditionnel du formulaire */}
             {!login ? (
