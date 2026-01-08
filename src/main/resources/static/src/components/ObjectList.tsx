@@ -14,7 +14,7 @@ const ObjectList: React.FC = () => {
   useEffect(() => {
     const fetchObjects = async () => {
       try {
-        const response = await api.get("/objects"); // Appelle l'endpoint `/api/objects`
+        const response = await api.get("/objects");
         setObjects(response.data);
       } catch (error) {
         console.error("Erreur lors de la récupération des objets :", error);

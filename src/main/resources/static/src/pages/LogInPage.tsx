@@ -1,4 +1,3 @@
-// src/pages/LoginPage.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
@@ -16,17 +15,11 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
     try {
       const response = await fetch("http://localhost:8080/api/users/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          login,
-          password,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ login, password }),
       });
 
       if (!response.ok) {
@@ -38,22 +31,23 @@ const LoginPage: React.FC = () => {
         navigate("/home");
       }
     } catch (error) {
-      setError("Une erreur est survenue. Veuillez réessayer: " + error);
+      setError("Une erreur est survenue.");
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-800">
-      <div className="w-full max-w-md bg-gray-700 shadow-md rounded-lg p-8">
-        <PageTitle className="text-center">Connexion</PageTitle>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center px-6">
+      <div className="w-full max-w-md bg-zinc-900/50 border border-zinc-800 shadow-2xl rounded-2xl p-10 backdrop-blur-sm">
+        <PageTitle className="text-center mb-8">Connexion</PageTitle>
+        <form onSubmit={handleSubmit} className="space-y-6">
           <Input
             id="login"
-            label="Login"
+            label="Identifiant"
             type="text"
             value={login}
             onChange={(e) => setLogin(e.target.value.trim())}
             required
+            placeholder="Votre login"
           />
           <Input
             id="password"
@@ -62,31 +56,37 @@ const LoginPage: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value.trim())}
             required
+            placeholder="••••••••"
           />
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 mt-4"
           >
             Se connecter
           </button>
         </form>
+        
         {error && (
-          <p className="mt-4 text-center text-sm text-red-600">{error}</p>
+          <p className="mt-6 text-center text-sm text-red-400 bg-red-400/10 py-2 rounded-lg border border-red-400/20">
+            {error}
+          </p>
         )}
-        <SignInFooter
-          link="/signup"
-          text="Pas encore inscrit ?"
-          linkText="Créer un compte"
-        />
+        
+        <div className="mt-8 pt-6 border-t border-zinc-800">
+          <SignInFooter
+            link="/signup"
+            text="Pas encore inscrit ?"
+            linkText="Créer un compte"
+          />
+        </div>
       </div>
-      <div className="w-full text-center mt-6">
-        <p className="text-white">
-          Envie de visiter ?{" "}
-          <a href="/home" className="text-blue-400 hover:underline">
-            Aller à l'accueil
-          </a>
-        </p>
-      </div>
+      
+      <p className="mt-8 text-zinc-500 text-sm">
+        Juste envie de jeter un œil ?{" "}
+        <a href="/home" className="text-blue-400 hover:text-blue-300 underline underline-offset-4 transition-colors">
+          Aller à l'accueil
+        </a>
+      </p>
     </div>
   );
 };

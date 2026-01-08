@@ -45,7 +45,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
               headers: { login },
             }
           );
-          setIsAdmin(response.data); // Mise à jour du statut admin
+          setIsAdmin(response.data);
         } catch (err) {
           console.error(
             "Erreur lors de la vérification de l'administrateur",

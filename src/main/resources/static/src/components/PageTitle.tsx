@@ -1,4 +1,3 @@
-// src/components/PageTitle.tsx
 import React from "react";
 
 interface InputProps {

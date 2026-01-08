@@ -4,18 +4,17 @@ import { useNavigate } from "react-router-dom";
 const NotFoundPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleGoHome = () => {
-    navigate("/home");
-  };
-
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="text-center bg-white shadow-lg rounded-lg p-8">
-        <h1 className="text-4xl font-bold text-red-600 mb-4">Erreur 404</h1>
-        <p className="text-xl text-gray-700 mb-6">Page non trouvée</p>
+    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-6">
+      <div className="text-center space-y-6">
+        <h1 className="text-9xl font-black text-zinc-800">404</h1>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold text-zinc-100">Page introuvable</h2>
+          <p className="text-zinc-400">Le trésor que vous cherchez n'existe pas ou a été déplacé.</p>
+        </div>
         <button
-          onClick={handleGoHome}
-          className="bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition"
+          onClick={() => navigate("/home")}
+          className="inline-block bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-blue-500/20"
         >
           Retour à l'accueil
         </button>

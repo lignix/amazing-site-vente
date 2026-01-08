@@ -5,116 +5,79 @@ import axios from "axios";
 import PageTitle from "../components/PageTitle";
 import PartTitle from "../components/PartTitle";
 
-interface ObjectForSale {
-  id: number;
-  description: string;
-  price: number;
-  sold: boolean;
-}
-
 const MyObjectsPage: React.FC = () => {
   const { login } = useUser();
   const navigate = useNavigate();
-  const [objects, setObjects] = useState<ObjectForSale[]>([]);
+  const [objects, setObjects] = useState<any[]>([]);
 
   useEffect(() => {
-    if (!login) {
-      navigate("/login");
-      return;
-    }
-
+    if (!login) { navigate("/login"); return; }
     const fetchMyObjects = async () => {
-      setObjects([]);
       try {
-        const response = await axios.get(
-          "http://localhost:8080/api/objects/my",
-          {
-            headers: {
-              login: login,
-            },
-          }
-        );
+        const response = await axios.get("http://localhost:8080/api/objects/my", {
+          headers: { login: login },
+        });
         setObjects(response.data);
-      } catch (err) {
-        console.error("Erreur lors de la récupération des objets", err);
-      }
+      } catch (err) { console.error(err); }
     };
-
     fetchMyObjects();
   }, [login, navigate]);
 
-  // Fonction pour marquer un objet comme vendu
   const setObjectSold = async (id: number) => {
     try {
-      await axios.patch(`http://localhost:8080/api/objects/${id}`, {
-        sold: true,
-      });
-      // Mettre à jour l'état local pour marquer l'objet comme vendu
-      setObjects((prevObjects) =>
-        prevObjects.map((obj) =>
-          obj.id === id ? { ...obj, sold: true } : obj
-        )
-      );
-    } catch (err) {
-      console.error("Erreur lors de la mise à jour de l'objet", err);
-    }
+      await axios.patch(`http://localhost:8080/api/objects/${id}`, { sold: true });
+      setObjects(prev => prev.map(obj => obj.id === id ? { ...obj, sold: true } : obj));
+    } catch (err) { console.error(err); }
   };
 
   return (
-    <div className="flex min-h-screen h-full bg-gray-800 py-8">
-      <div className="flex flex-col justify-between w-full overflow-y-auto bg-gray-700 shadow-lg rounded-lg py-8 px-12 scroll-y">
-        <PageTitle>Mes Objets</PageTitle>
-
-        <div className="flex space-x-8">
-          <div className="flex-grow bg-gray-600 p-4 rounded-lg shadow-md">
-            <PartTitle title="Liste de mes objets" />
-
-            <div className="overflow-y-auto max-h-[calc(90vh-16rem)]">
-              <ul className="pt-4">
-                {objects.length > 0 ? (
-                  objects.map((obj) => (
-                    <li
-                      key={obj.id}
-                      className="mb-2 p-2 bg-blue-200 rounded shadow flex justify-between items-center"
-                    >
-                      <div>
-                        <p>
-                          <strong>Description:</strong> {obj.description}
-                        </p>
-                        <p>
-                          <strong>Prix:</strong> {obj.price} €
-                        </p>
-                      </div>
-                      <div className="flex items-center space-x-4">
-                        <p>
-                          Status :{" "}
-                          <strong>{obj.sold ? "Vendu" : "En vente"}</strong>
-                        </p>
-                        {!obj.sold && (
-                          <button
-                            onClick={() => setObjectSold(obj.id)}
-                            className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
-                          >
-                            Marquer comme vendu
-                          </button>
-                        )}
-                      </div>
-                    </li>
-                  ))
-                ) : (
-                  <p className="text-blue-300">Aucun objet trouvé.</p>
-                )}
-              </ul>
-            </div>
-          </div>
+    <div className="min-h-screen bg-[#0a0a0a] text-zinc-100">
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        <div className="flex justify-between items-center mb-12">
+          <PageTitle>Mes Objets</PageTitle>
+          <button
+            onClick={() => navigate("/")}
+            className="text-sm font-medium text-zinc-400 hover:text-blue-400 transition-colors"
+          >
+            ← Retour à l'accueil
+          </button>
         </div>
 
-        <button
-          onClick={() => navigate("/")}
-          className="w-full bg-blue-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-blue-700 transition mt-8"
-        >
-          Retour à l'accueil
-        </button>
+        <div className="bg-zinc-900/30 border border-zinc-800 rounded-2xl p-8">
+          <PartTitle title="Inventaire de vos ventes" />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+            {objects.length > 0 ? (
+              objects.map((obj) => (
+                <div key={obj.id} className="p-6 bg-zinc-900 border border-zinc-800 rounded-xl flex justify-between items-center group transition-all hover:border-zinc-700">
+                  <div>
+                    <h3 className="text-zinc-100 font-medium mb-1">{obj.description}</h3>
+                    <p className="text-blue-400 font-mono text-sm">{obj.price} €</p>
+                  </div>
+                  <div className="flex flex-col items-end gap-3">
+                    <span className={`text-xs px-2 py-1 rounded-full uppercase tracking-wider font-bold ${
+                      obj.sold ? "bg-zinc-800 text-zinc-500" : "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20"
+                    }`}>
+                      {obj.sold ? "Vendu" : "En vente"}
+                    </span>
+                    {!obj.sold && (
+                      <button
+                        onClick={() => setObjectSold(obj.id)}
+                        className="text-xs bg-zinc-100 text-zinc-950 px-3 py-1.5 rounded-lg hover:bg-blue-500 hover:text-white transition-all font-semibold"
+                      >
+                        Vendre
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full py-20 text-center">
+                <p className="text-zinc-500 italic">Vous n'avez pas encore d'objets en vente.</p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

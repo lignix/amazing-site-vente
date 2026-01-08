@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Importer useNavigate
-import FormInput from "../components/FormInput"; // Assure-toi que ce composant existe et est stylisé si nécessaire
+import { useNavigate } from "react-router-dom";
+import FormInput from "../components/FormInput";
 import PageTitle from "../components/PageTitle";
 import SignInFooter from "../components/SignInFooter";
 
@@ -10,42 +10,24 @@ const SignupPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [city, setCity] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate(); // Récupérer la fonction navigate
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(login, password, city);
-
-    // Réinitialisation de l'erreur précédente
     setError(null);
-
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/users/register",
-        {
-          login,
-          password,
-          city,
-        }
-      );
-
-      // succès
-      console.log(response.data);
+      await axios.post("http://localhost:8080/api/users/register", { login, password, city });
       navigate("/login");
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data || "Erreur inconnue");
-      } else {
-        setError("Une erreur est survenue. Veuillez réessayer.");
-      }
+      setError("Erreur lors de l'inscription.");
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-800">
-      <div className="w-full max-w-md bg-gray-700 shadow-md rounded-lg p-8">
-        <PageTitle className="text-center">Inscription</PageTitle>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center px-6">
+      <div className="w-full max-w-md bg-zinc-900/50 border border-zinc-800 shadow-2xl rounded-2xl p-10">
+        <PageTitle className="text-center mb-8">Inscription</PageTitle>
+        <form onSubmit={handleSubmit} className="space-y-5">
           <FormInput
             label="Login"
             type="text"
@@ -53,6 +35,7 @@ const SignupPage: React.FC = () => {
             value={login}
             onChange={(e) => setLogin(e.target.value.trim())}
             required
+            placeholder="Choisissez un pseudo"
           />
           <FormInput
             label="Mot de passe"
@@ -61,6 +44,7 @@ const SignupPage: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value.trim())}
             required
+            placeholder="••••••••"
           />
           <FormInput
             label="Ville"
@@ -69,30 +53,25 @@ const SignupPage: React.FC = () => {
             value={city}
             onChange={(e) => setCity(e.target.value.trim())}
             required
+            placeholder="Ex: Paris"
           />
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+            className="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 mt-4"
           >
-            S'inscrire
+            Créer mon compte
           </button>
         </form>
-        {error && (
-          <p className="mt-4 text-center text-sm text-red-600">{error}</p>
-        )}
-        <SignInFooter
-          link="/login"
-          text="Déjà un compte ?"
-          linkText="Se connecter"
-        />
-      </div>
-      <div className="w-full text-center mt-6">
-        <p className="text-white">
-          Envie de visiter ?{" "}
-          <a href="/home" className="text-blue-400 hover:underline">
-            Aller à l'accueil
-          </a>
-        </p>
+        
+        {error && <p className="mt-4 text-center text-sm text-red-400">{error}</p>}
+        
+        <div className="mt-8 pt-6 border-t border-zinc-800">
+          <SignInFooter
+            link="/login"
+            text="Déjà un compte ?"
+            linkText="Se connecter"
+          />
+        </div>
       </div>
     </div>
   );

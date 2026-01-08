@@ -1,4 +1,3 @@
-// src/components/Input.tsx
 import React from "react";
 
 interface InputProps {
@@ -10,6 +9,7 @@ interface InputProps {
   required?: boolean;
   placeholder?: string;
   disabled?: boolean;
+  className?: string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -21,12 +21,13 @@ const Input: React.FC<InputProps> = ({
   required = false,
   placeholder = "",
   disabled,
+  className,
 }) => {
   return (
     <div>
       <label
         htmlFor={id}
-        className="block text-lg font-medium text-blue-400 mb-2"
+        className={className ? className : "text-lg font-medium text-blue-400 mb-2"}
       >
         {label}
       </label>

@@ -8,9 +8,8 @@ interface AdminRouteProps {
 
 const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
   const user = useUser();
-  const isAdmin = useAdmin(); // Assurez-vous que `useUser` renvoie l'information sur `isAdmin`
+  const isAdmin = useAdmin();
 
-  // Rediriger vers la page de login si non connecté ou non admin
   if (!user || !isAdmin) {
     return <Navigate to="/login" />;
   }
