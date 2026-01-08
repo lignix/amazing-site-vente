@@ -47,14 +47,17 @@ public class ObjectController {
     }
 
     // Marquer un objet comme vendu
-    @PatchMapping("/{id}")
-    public ResponseEntity<ObjectForSale> markObjectAsSold(@PathVariable Long id) {
-        ObjectForSale updatedObject = objectService.markObjectAsSold(id);
+    @PatchMapping("/{id}/sell")
+    public ResponseEntity<ObjectForSale> markObjectAsSold(
+            @PathVariable Long id,
+            @RequestHeader("buyerLogin") String buyerLogin) {
+
+        ObjectForSale updatedObject = objectService.markObjectAsSold(id, buyerLogin);
+
         if (updatedObject != null) {
-            return ResponseEntity.ok(updatedObject); // Retourner l'objet mis à jour
-        } else {
-            return ResponseEntity.notFound().build(); // Retourner 404 si l'objet n'est pas trouvé
+            return ResponseEntity.ok(updatedObject);
         }
+        return ResponseEntity.notFound().build();
     }
 
     // Supprimer un objet

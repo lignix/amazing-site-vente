@@ -5,10 +5,9 @@ import com.goat.site_vente.entity.ObjectForSale;
 import com.goat.site_vente.entity.User;
 import com.goat.site_vente.repository.ObjectRepository;
 import com.goat.site_vente.repository.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,22 +19,14 @@ public class ObjectService {
     @Autowired
     private UserRepository userRepository;
 
-    // Récupérer tous les objets
     public List<ObjectForSale> getAllObjects() {
         return objectRepository.findAll();
     }
 
-    // Récupérer un objet par son ID
-    public Optional<ObjectForSale> getObjectById(Long id) {
-        return objectRepository.findById(id);
-    }
-
-    // Récupérer les objets d'un utilisateur
     public List<ObjectForSale> getObjectsByLogin(String login) {
         return objectRepository.findByUserLogin(login);
     }
 
-    // Créer un nouvel objet
     public ObjectForSale createObjectForSale(ObjectForSaleDTO request, String login) {
         User user = userRepository.findByLogin(login);
         ObjectForSale objectForSale = new ObjectForSale();
@@ -47,17 +38,21 @@ public class ObjectService {
         return objectRepository.save(objectForSale);
     }
 
-    public ObjectForSale markObjectAsSold(Long id) {
+    public ObjectForSale markObjectAsSold(Long id, String buyerLogin) {
         Optional<ObjectForSale> optionalObject = objectRepository.findById(id);
+
         if (optionalObject.isPresent()) {
             ObjectForSale object = optionalObject.get();
-            object.setSold(true); // Marquer l'objet comme vendu
-            return objectRepository.save(object); // Sauvegarder l'objet mis à jour
+
+            object.setSold(true);
+            object.setSaleDate(LocalDateTime.now());
+            object.setBuyerName(buyerLogin);
+
+            return objectRepository.save(object);
         }
-        return null; // Retourner null si l'objet n'est pas trouvé
+        return null;
     }
 
-    // Supprimer un objet
     public void deleteObject(Long id) {
         objectRepository.deleteById(id);
     }

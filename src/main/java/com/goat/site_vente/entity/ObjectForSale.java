@@ -1,9 +1,9 @@
 package com.goat.site_vente.entity;
 
 import java.math.BigDecimal;
-
 import jakarta.persistence.*;
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -24,4 +24,8 @@ public class ObjectForSale {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    private LocalDateTime saleDate;
+
+    private String buyerName; 
 }
